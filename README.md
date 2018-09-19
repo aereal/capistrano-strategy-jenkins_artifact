@@ -46,6 +46,8 @@ set :deploy_via, :jenkins_artifact
 | `build_project` | String | **Y** | N/A |
 | `is_multibranch_job` | Boolean | n | `nil` |
 | `artifact_relative_path` | String | n | `nil` |
+| `artifact_display_path` | String | n | `nil` |
+| `artifact_file_name` | String | n | `nil` |
 | `artifact_compression_type` | (see below) | n | guessed by artifact URL |
 | `artifact_strip_level` | Numeric | n | `1` |
 | `release_name_from` | (see below) | n | `:build_at` |

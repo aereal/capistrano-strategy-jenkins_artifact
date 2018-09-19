@@ -75,9 +75,15 @@ class ::Capistrano::Deploy::Strategy::JenkinsArtifact < ::Capistrano::Deploy::St
     build_at = Time.at(last_successful_build['timestamp'] / 1000)
 
     set(:artifact_url) do
-      artifact_finder = exists?(:artifact_relative_path) ?
-        ->(artifact) { artifact['relativePath'] == fetch(:artifact_relative_path) } :
+      artifact_finder = if exists?(:artifact_relative_path)
+        ->(artifact) { artifact['relativePath'] == fetch(:artifact_relative_path) }
+      elsif exists?(:artifact_display_path)
+        ->(artifact) { artifact['displayPath'] == fetch(:artifact_display_path) }
+      elsif exists?(:artifact_file_name)
+        ->(artifact) { artifact['fileName'] == fetch(:artifact_file_name) }
+      else
         ->(artifact) { true }
+      end
       uri = Helpers.get_artifact_url_by_build(last_successful_build, &artifact_finder)
       abort "No artifact found for #{dir_name}" if uri.empty?
       URI.parse(uri).tap {|uri|
